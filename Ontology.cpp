@@ -53,11 +53,72 @@ Explanation
 The first query corresponds to the green area in the diagram, since it is looking for topics under Eagles, and the query string matches just one question: "How endangered are eagles?" The second query corresponds to the blue area in the diagram, which is the subtree of Birds, and matches two questions that begin  with "Where". The third corresponds to the red area, which does not have any questions that begin with "Why do". The final query corresponds to the entire tree, since Animals is the root topic, and matches three questions.*/
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <cstdio>
 using namespace std;
+
+struct chainNODE
+{
+	string cvalue;
+	chainNODE *next;
+	//chainNODE *prev;
+};
+typedef chainNODE* CNODE;
+struct treeNODE
+{
+	string value;
+	treeNODE *rlink;
+	treeNODE *llink;
+	CNODE more;
+};
+typedef treeNODE* TNODE;
+
+TNODE insert_node(string item, TNODE root)
+{
+	TNODE cur,temp,prev;
+	CNODE ctemp;
+	temp = (TNODE)malloc(sizeof(struct treeNODE));
+	temp->value = item;
+	temp->llink=temp->rlink=NULL;
+	temp->more=NULL;
+	if(root == NULL)
+		return temp;
+	prev = NULL;
+	cur = root;
+		prev = cur;
+		if(cur->llink == NULL)
+		{
+			prev->llink=temp;
+		}
+		else if(cur->rlink == NULL)
+		{
+			prev->rlink=temp;
+		}
+		else
+		{
+			CNODE ccur;
+			ctemp = (CNODE)malloc(sizeof(struct chainNODE));
+			ctemp->cvalue = item;
+			ctemp->next=NULL;
+			if(cur->more==NULL)
+				cur->more=ctemp;
+			else
+			{
+				ccur=cur->more;
+				while(ccur->next!=NULL)
+					ccur=ccur->next;
+				ccur->next=ctemp;
+			}
+		}
+}
 
 int main(){
 
-	string flattree,S[10],S1[10];
+	TNODE root=NULL;
+	root=insert_node("Fruits",root);
+	cout<<root->value;
+
+	/*string flattree,S[10],S1[10];
 	int N,M,K,i;
 	cout << "Enter number of Topics (N)\n";
 	cin >> N;
@@ -88,7 +149,7 @@ int main(){
 	for (i = 0; i < K; i++)
 	{
 		cout<<S1[i]<<endl;
-	}
+	}*/
 	return 0;
 }
 
