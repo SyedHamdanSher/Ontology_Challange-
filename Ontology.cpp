@@ -89,10 +89,12 @@ TNODE insert_node(string item, TNODE root)
 		if(cur->llink == NULL)
 		{
 			prev->llink=temp;
+			return cur;
 		}
 		else if(cur->rlink == NULL)
 		{
 			prev->rlink=temp;
+			return cur;
 		}
 		else
 		{
@@ -100,23 +102,48 @@ TNODE insert_node(string item, TNODE root)
 			ctemp = (CNODE)malloc(sizeof(struct chainNODE));
 			ctemp->cvalue = item;
 			ctemp->next=NULL;
-			if(cur->more==NULL)
+			if(cur->more==NULL){
 				cur->more=ctemp;
+				return cur;
+			}
 			else
 			{
 				ccur=cur->more;
 				while(ccur->next!=NULL)
 					ccur=ccur->next;
 				ccur->next=ctemp;
+				return cur;
 			}
 		}
 }
 
 int main(){
 
-	TNODE root=NULL;
+	TNODE root=NULL,cur;
 	root=insert_node("Fruits",root);
 	cout<<root->value;
+	root=insert_node("Apple",root);
+	cur=root;
+	cur=cur->llink;
+	cout<<cur->value;
+	root=insert_node("Orange",root);
+	cur=root;
+	cur=cur->rlink;
+	cout<<cur->value;
+	root=insert_node("Banana",root);
+	cur=root;
+	CNODE ccur;
+	ccur=cur->more;
+	cout<<ccur->cvalue;
+	root=insert_node("Mango",root);
+	root=insert_node("Mango1",root);
+	root=insert_node("Mango2",root);
+	cur=root;
+	ccur=cur->more;
+	while(ccur->next!=NULL){
+		ccur=ccur->next;
+		cout<<ccur->cvalue;
+	}
 
 	/*string flattree,S[10],S1[10];
 	int N,M,K,i;
