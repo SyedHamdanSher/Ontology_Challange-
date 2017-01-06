@@ -76,7 +76,7 @@ struct treeNODE
 };
 typedef treeNODE* TNODE;
 
-TNODE func(TNODE cur,string source,TNODE root,string q){
+int func(TNODE cur,string source,TNODE root,string q){
 	int i=0;
 	if (cur->value==source)
 	{
@@ -85,14 +85,14 @@ TNODE func(TNODE cur,string source,TNODE root,string q){
 			if(cur->ques[i].empty())
 			{
 				q.copy((char *)cur->ques[i].data(),0,q.length());
-				return root;
+				return 0;
 			}
 			else
 				i++;
 		}
 	}
 	else
-		return cur;
+		return 1;
 }
 int func1(CNODE ccur,string source,string q){
 	int i=0;
@@ -122,10 +122,10 @@ TNODE insert_node(string item, TNODE root)
 	temp->value = item;
 	temp->llink=temp->rlink=NULL;
 	temp->more=NULL;
-	for (i = 0; i < MAX; i++)
+	/*for (i = 0; i < MAX; i++)
 	{
 		temp->ques[i]="";
-	}
+	}*/
 	if(root == NULL)
 		return temp;
 	prev = NULL;
@@ -134,12 +134,12 @@ TNODE insert_node(string item, TNODE root)
 		if(cur->llink == NULL)
 		{
 			prev->llink=temp;
-			return cur;
+			return root;
 		}
 		else if(cur->rlink == NULL)
 		{
 			prev->rlink=temp;
-			return cur;
+			return root;
 		}
 		else
 		{
@@ -147,13 +147,13 @@ TNODE insert_node(string item, TNODE root)
 			ctemp = (CNODE)malloc(sizeof(struct chainNODE));
 			ctemp->cvalue = item;
 			ctemp->next=NULL;
-			for (i = 0; i < MAX; i++)
+			/*for (i = 0; i < MAX; i++)
 			{
 				ctemp->ques[i]="";
-			}
+			}*/
 			if(cur->more==NULL){
 				cur->more=ctemp;
-				return cur;
+				return root;
 			}
 			else
 			{
@@ -161,12 +161,12 @@ TNODE insert_node(string item, TNODE root)
 				while(ccur->next!=NULL)
 					ccur=ccur->next;
 				ccur->next=ctemp;
-				return cur;
+				return root;
 			}
 		}
 }
 
-TNODE insert_ques(string q,TNODE root,string source,int n)
+TNODE insert_ques(string q,TNODE root,string source)
 {
 	TNODE cur,temp,prev;
 	CNODE ccur;
@@ -177,63 +177,88 @@ TNODE insert_ques(string q,TNODE root,string source,int n)
 	ccur=root->more;
 	if (cur->value==source)
 	{
-		cur=func(cur,source,root,q);
+		flag=func(cur,source,root,q);
 		return cur;
 	}
 	else{
 			cur=cur->llink;
-			cur=func(cur,source,root,q);
-			if(cur==root)
+			flag=func(cur,source,root,q);
+			if(flag==0)
 				return root;
-			cur=root->rlink;
-			cur=func(cur,source,root,q);
-			if(cur==root)
-				return root;
-			while(ccur->cvalue!=source || ccur->next!=NULL){
-				ccur=ccur->next;
-			}
-			if(ccur->cvalue==source){
-				flag=func1(ccur,source,q);
+			else{
+				cur=root->rlink;
+				flag=func(cur,source,root,q);
 				if(flag==0)
 					return root;
-				else
-					return NULL;
+				else{
+					while(ccur->cvalue!=source && ccur!=NULL){
+					ccur=ccur->next;
+					}
+					if(ccur->cvalue==source){
+						flag=func1(ccur,source,q);
+					if(flag==0)
+						return root;
+					else
+						return NULL;
+					}
+					else
+						return NULL;
+				}
 			}
-			else
-				return NULL;
 		}
 }
 
 
-
+//Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
 int main(){
 
-	TNODE root=NULL,cur;
-	root=insert_node("Fruits",root);
+	TNODE root=NULL,cur=NULL;
+	root=insert_node("Animals",root);
 	cout<<root->value;
-	root=insert_node("Apple",root);
+	cur=insert_node("Reptiles",root);
 	cur=root;
 	cur=cur->llink;
 	cout<<cur->value;
-	root=insert_node("Orange",root);
+	cur=insert_node("Birds",root);
 	cur=root;
 	cur=cur->rlink;
 	cout<<cur->value;
-	root=insert_node("Banana",root);
+	cur=insert_node("Eagles",root);
 	cur=root;
 	CNODE ccur;
 	ccur=cur->more;
 	cout<<ccur->cvalue;
-	root=insert_node("Mango",root);
-	root=insert_node("Mango1",root);
-	root=insert_node("Mango2",root);
+	cur=insert_node("Pigeons",root);
+	cur=insert_node("Crows",root);
+	//root=insert_node("Mango2",root);
 	cur=root;
 	ccur=cur->more;
 	while(ccur->next!=NULL){
 		ccur=ccur->next;
 		cout<<ccur->cvalue;
 	}
-
+/*
+Reptiles: Why are many reptiles green?
+Birds: How do birds fly?
+Eagles: How endangered are eagles?
+Pigeons: Where in the world are pigeons most densely populated?
+Eagles: Where do most eagles live?
+4
+Eagles How en
+Birds Where
+Reptiles Why do
+Animals Wh
+*/
+	cur=insert_ques("Why are many reptiles green?",root,"Reptiles");
+	cout<<"Found Reptiles insert ques\n";
+	cur=insert_ques("How do birds fly?",root,"Birds");
+	cout<<"Found Birds insert ques\n";
+	cur=insert_ques("How endangered are eagles?",root,"Eagles");
+	cout<<"Found Eagles insert ques\n";
+	root=insert_ques("Where in the world are pigeons most densely populated?",root,"Pigeons");
+	cout<<"Found Pigeons insert ques\n";
+	root=insert_ques("Where do most eagles live?",root,"Eagles");
+	cout<<"Found Eagles insert ques\n";
 	/*string flattree,S[10],S1[10];
 	int N,M,K,i;
 	cout << "Enter number of Topics (N)\n";
