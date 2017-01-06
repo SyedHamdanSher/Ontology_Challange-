@@ -56,11 +56,13 @@ The first query corresponds to the green area in the diagram, since it is lookin
 #include <cstdlib>
 #include <cstdio>
 using namespace std;
+#define MAX 10
 
 struct chainNODE
 {
 	string cvalue;
 	chainNODE *next;
+	string ques[MAX];
 	//chainNODE *prev;
 };
 typedef chainNODE* CNODE;
@@ -70,17 +72,60 @@ struct treeNODE
 	treeNODE *rlink;
 	treeNODE *llink;
 	CNODE more;
+	string ques[MAX];
 };
 typedef treeNODE* TNODE;
+
+TNODE func(TNODE cur,string source,TNODE root,string q){
+	int i=0;
+	if (cur->value==source)
+	{
+		while(i<MAX)
+		{
+			if(cur->ques[i].empty())
+			{
+				q.copy((char *)cur->ques[i].data(),0,q.length());
+				return root;
+			}
+			else
+				i++;
+		}
+	}
+	else
+		return cur;
+}
+int func1(CNODE ccur,string source,string q){
+	int i=0;
+	if (ccur->cvalue==source)
+	{
+		while(i<MAX)
+		{
+			if(ccur->ques[i].empty())
+			{
+				q.copy((char *)ccur->ques[i].data(),0,q.length());
+				return 0;
+			}
+			else
+				i++;
+		}
+	}
+	else
+		return 1;
+}
 
 TNODE insert_node(string item, TNODE root)
 {
 	TNODE cur,temp,prev;
 	CNODE ctemp;
+	int i;
 	temp = (TNODE)malloc(sizeof(struct treeNODE));
 	temp->value = item;
 	temp->llink=temp->rlink=NULL;
 	temp->more=NULL;
+	for (i = 0; i < MAX; i++)
+	{
+		temp->ques[i]="";
+	}
 	if(root == NULL)
 		return temp;
 	prev = NULL;
@@ -102,6 +147,10 @@ TNODE insert_node(string item, TNODE root)
 			ctemp = (CNODE)malloc(sizeof(struct chainNODE));
 			ctemp->cvalue = item;
 			ctemp->next=NULL;
+			for (i = 0; i < MAX; i++)
+			{
+				ctemp->ques[i]="";
+			}
 			if(cur->more==NULL){
 				cur->more=ctemp;
 				return cur;
@@ -116,6 +165,46 @@ TNODE insert_node(string item, TNODE root)
 			}
 		}
 }
+
+TNODE insert_ques(string q,TNODE root,string source,int n)
+{
+	TNODE cur,temp,prev;
+	CNODE ccur;
+	int i=0,flag;
+	if(root == NULL)
+		return NULL;
+	cur = root;
+	ccur=root->more;
+	if (cur->value==source)
+	{
+		cur=func(cur,source,root,q);
+		return cur;
+	}
+	else{
+			cur=cur->llink;
+			cur=func(cur,source,root,q);
+			if(cur==root)
+				return root;
+			cur=root->rlink;
+			cur=func(cur,source,root,q);
+			if(cur==root)
+				return root;
+			while(ccur->cvalue!=source || ccur->next!=NULL){
+				ccur=ccur->next;
+			}
+			if(ccur->cvalue==source){
+				flag=func1(ccur,source,q);
+				if(flag==0)
+					return root;
+				else
+					return NULL;
+			}
+			else
+				return NULL;
+		}
+}
+
+
 
 int main(){
 
