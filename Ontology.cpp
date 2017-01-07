@@ -84,7 +84,8 @@ int func(TNODE cur,string source,TNODE root,string q){
 		{
 			if(cur->ques[i].empty())
 			{
-				q.copy((char *)cur->ques[i].data(),0,q.length());
+				cur->ques[i].assign(q);
+				cout<<cur->ques[i];
 				return 0;
 			}
 			else
@@ -102,7 +103,8 @@ int func1(CNODE ccur,string source,string q){
 		{
 			if(ccur->ques[i].empty())
 			{
-				q.copy((char *)ccur->ques[i].data(),0,q.length());
+				ccur->ques[i].assign(q);
+				cout<<ccur->ques[i];
 				return 0;
 			}
 			else
@@ -207,6 +209,102 @@ TNODE insert_ques(string q,TNODE root,string source)
 			}
 		}
 }
+void display(TNODE root)
+{
+	int i;
+	CNODE ccur;
+	TNODE cur;
+	cur=root;
+	ccur=root->more;
+	for(i=0;i<2;i++){
+		cout<<cur->value<<":"<<cur->ques[i]<<endl;
+		cur=root->llink;
+		cout<<cur->value<<":"<<cur->ques[i]<<endl;
+		cur=root->rlink;
+		cout<<cur->value<<":"<<cur->ques[i]<<endl;
+	}
+	while(!ccur->cvalue.empty()){
+		for(i=0;i<2;i++){
+			cout<<ccur->cvalue<<":"<<ccur->ques[i]<<endl;
+		}
+		ccur=ccur->next;
+	}
+
+}
+int check(string s, TNODE cur)
+{
+	int count = 0,i=0;
+	while(!cur->ques[i].empty())
+		{
+			if(s.find(cur->ques[i].data()>=0))
+				count++;
+			else
+				i++;
+		}
+		return count;
+}
+int check(string s, CNODE cur)
+{
+	cout<<"CNODE"<<endl;
+	int count=0,i=0;
+	//while(!cur->ques[i].empty())
+		{cout<<s<<endl;
+			if((s.find(cur->ques[i].data()))>=0)
+				count++;
+			//else
+				//i++;
+		}
+		return count;
+}
+
+void outresult(string s,TNODE root){
+	TNODE cur;
+	CNODE ccur;
+	string sflag,sflag1;
+	cur=root;
+	ccur=root->more;
+	int i=0,count=0;
+	sflag=s.substr(0,s.find_first_of(" "));
+	sflag1=s.substr(sflag.length()+1);
+	cout<<sflag<<endl;
+	cout<<sflag1<<endl;
+	if(cur->value==sflag)
+	{
+		cout<<"TNODE1"<<endl;
+		count=check(sflag1,cur);
+		cout<<count<<endl;
+	}else{
+		cout<<"TNODE2"<<endl;
+		cur=root->llink;
+		if(cur->value==sflag)
+		{
+			cout<<"TNODE3"<<endl;
+			count=check(sflag1,cur);
+			cout<<count<<endl;	
+		}else{
+			cout<<"TNODE4"<<endl;
+			cur=root->rlink;
+			if(cur->value==sflag)
+			{
+				cout<<"TNODE5"<<endl;
+				count=check(sflag1,cur);
+				cout<<count<<endl;	
+			}else{
+				cout<<"TNODE6"<<endl;
+				while(!ccur->cvalue.empty()){
+					if(ccur->cvalue==sflag){
+						count=check(sflag1,ccur);
+						cout<<count<<endl;
+						return;
+					}else{
+						cout<<"Not found"<<endl;	
+					}ccur=ccur->next;	
+				}
+			}
+		}
+		
+	}
+}
 
 
 //Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
@@ -255,10 +353,21 @@ Animals Wh
 	cout<<"Found Birds insert ques\n";
 	cur=insert_ques("How endangered are eagles?",root,"Eagles");
 	cout<<"Found Eagles insert ques\n";
-	root=insert_ques("Where in the world are pigeons most densely populated?",root,"Pigeons");
+	cur=insert_ques("Where in the world are pigeons most densely populated?",root,"Pigeons");
 	cout<<"Found Pigeons insert ques\n";
-	root=insert_ques("Where do most eagles live?",root,"Eagles");
+	cur=insert_ques("Where do most eagles live?",root,"Eagles");
 	cout<<"Found Eagles insert ques\n";
+
+	//display(root);
+
+	outresult("Eagles How en",root);
+	/*outresult("Birds Where",root);
+	outresult("Reptiles Why do",root);
+	outresult("Animals Wh",root);
+
+
+
+
 	/*string flattree,S[10],S1[10];
 	int N,M,K,i;
 	cout << "Enter number of Topics (N)\n";
