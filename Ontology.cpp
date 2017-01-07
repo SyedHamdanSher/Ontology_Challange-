@@ -55,8 +55,11 @@ The first query corresponds to the green area in the diagram, since it is lookin
 #include <string>
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 using namespace std;
 #define MAX 10
+int N=0;
+string MS,nr;
 
 struct chainNODE
 {
@@ -75,6 +78,8 @@ struct treeNODE
 	string ques[MAX];
 };
 typedef treeNODE* TNODE;
+
+CNODE CCUR;
 
 int func(TNODE cur,string source,TNODE root,string q){
 	int i=0;
@@ -124,10 +129,6 @@ TNODE insert_node(string item, TNODE root)
 	temp->value = item;
 	temp->llink=temp->rlink=NULL;
 	temp->more=NULL;
-	/*for (i = 0; i < MAX; i++)
-	{
-		temp->ques[i]="";
-	}*/
 	if(root == NULL)
 		return temp;
 	prev = NULL;
@@ -149,10 +150,6 @@ TNODE insert_node(string item, TNODE root)
 			ctemp = (CNODE)malloc(sizeof(struct chainNODE));
 			ctemp->cvalue = item;
 			ctemp->next=NULL;
-			/*for (i = 0; i < MAX; i++)
-			{
-				ctemp->ques[i]="";
-			}*/
 			if(cur->more==NULL){
 				cur->more=ctemp;
 				return root;
@@ -305,13 +302,112 @@ void outresult(string s,TNODE root){
 		
 	}
 }
+string cutter(string delimiter,string s)
+{
+	size_t pos = 0,endpos,startpos;
+	string ss;
+	pos = s.find(delimiter);
+    ss = s.substr(0, pos);
+    cout<<ss<<endl;
+    endpos = ss.find_last_not_of(" \t");
+	if( string::npos != endpos )
+	{
+    	ss = ss.substr( 0, endpos+1 );
+	}
+	startpos = ss.find_first_not_of(" \t");
+	if( string::npos != startpos )
+	{
+    	ss = ss.substr( startpos );
+	}
+	cout<<ss<<endl;;
+    return ss;
+}
+
+
+TNODE constructTree(string s,TNODE root)
+{
+	int pos;
+	string ss,delimiter="(";
+	char flag;
+	if(s[0]=='('){
+		s[0]=' ';
+	}
+
+	pos = s.find(delimiter);
+	if(pos!=-1){
+	ss=cutter(delimiter,s);
+	root=insert_node(ss,root);
+	s.erase(0, pos + delimiter.length()+1);
+	cout<<s<<endl;}
+	while(s[0]!='('&&s[0]!=')'){		
+		delimiter=" ";
+		pos = s.find(delimiter);
+		ss=cutter(delimiter,s);
+		root=insert_node(ss,root);
+		s.erase(0, pos + delimiter.length());
+		cout<<s<<endl;
+	}
+	//display(root);
+	
+	MS.assign(s);
+	nr.assign(ss);
+	cout<<MS<<endl<<nr<<endl;
+	return root;
+}
+
+TNODE search(TNODE root)
+{
+	TNODE cur;
+	CNODE ccur;
+	cur=root;
+	ccur=root->more;
+	while(cur!=NULL)
+	{cout<<"S1"<<endl;
+		if(cur->value==nr)
+		{cout<<"S2"<<endl;
+			return cur;
+		}
+		else
+		{cout<<"S3"<<endl;
+			cur=root->llink;
+			if(cur->value==nr)
+			{cout<<"S4"<<endl;
+				return cur;
+			}
+			else
+			{cout<<"S5"<<endl;
+				cur=root->rlink;
+				if(cur->value==nr)
+				{cout<<"S6"<<endl;
+					return cur;
+				}
+				else
+				{cout<<"S7"<<endl;
+					while(ccur!=NULL)
+					{
+						if(ccur->cvalue==nr)
+						{cout<<"S8"<<endl;
+							CCUR = ccur;
+							return cur;
+						}
+						else
+							ccur=ccur->next;
+					}
+				}
+
+			}
+		}
+	}
+}
+
 
 
 //Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
 int main(){
 
 	TNODE root=NULL,cur=NULL;
-	root=insert_node("Animals",root);
+	string ss;
+	/*root=insert_node("Animals",root);
 	cout<<root->value;
 	cur=insert_node("Reptiles",root);
 	cur=root;
@@ -347,7 +443,7 @@ Birds Where
 Reptiles Why do
 Animals Wh
 */
-	cur=insert_ques("Why are many reptiles green?",root,"Reptiles");
+	/*cur=insert_ques("Why are many reptiles green?",root,"Reptiles");
 	cout<<"Found Reptiles insert ques\n";
 	cur=insert_ques("How do birds fly?",root,"Birds");
 	cout<<"Found Birds insert ques\n";
@@ -363,13 +459,14 @@ Animals Wh
 	outresult("Eagles How en",root);
 	outresult("Birds Where",root);
 	outresult("Reptiles Why do",root);
-	outresult("Animals Wh",root);
+	outresult("Animals Wh",root);*/
 
 
 
 
 	/*string flattree,S[10],S1[10];
 	int N,M,K,i;
+	TNODE root;
 	cout << "Enter number of Topics (N)\n";
 	cin >> N;
 	cin.ignore();
@@ -400,6 +497,11 @@ Animals Wh
 	{
 		cout<<S1[i]<<endl;
 	}*/
+	root=constructTree("Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )",root);
+	cout<<root->value;
+	cur=search(root);
+	cout<<cur->value;
+	//cur=constructTree(MS,cur);
 	return 0;
 }
 
