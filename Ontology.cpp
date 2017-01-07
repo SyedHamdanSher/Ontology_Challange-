@@ -235,11 +235,11 @@ int check(string s, TNODE cur)
 {
 	int count = 0,i=0;
 	while(!cur->ques[i].empty())
-		{
+		{cout<<s<<endl;
 			if(s.find(cur->ques[i].data()>=0))
 				count++;
-			else
-				i++;
+			//else
+			i++;
 		}
 		return count;
 }
@@ -247,12 +247,12 @@ int check(string s, CNODE cur)
 {
 	cout<<"CNODE"<<endl;
 	int count=0,i=0;
-	//while(!cur->ques[i].empty())
+	while(!cur->ques[i].empty())
 		{cout<<s<<endl;
 			if((s.find(cur->ques[i].data()))>=0)
 				count++;
 			//else
-				//i++;
+			i++;
 		}
 		return count;
 }
@@ -361,7 +361,7 @@ Animals Wh
 	//display(root);
 
 	outresult("Eagles How en",root);
-	/*outresult("Birds Where",root);
+	outresult("Birds Where",root);
 	outresult("Reptiles Why do",root);
 	outresult("Animals Wh",root);
 
