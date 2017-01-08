@@ -47,6 +47,32 @@ Sample Output
 2
 0
 3
+lastwalker@Chelsea:~/Documents/techie$ g++ Ontology.cpp 
+lastwalker@Chelsea:~/Documents/techie$ ./a.out
+Enter number of Topics (N)
+6
+N topics arranged in a flat tree:Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
+Enter Number of questions(M)
+5
+Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )Each line contains a topic name, followed by a colon and a space, and then the question text
+
+Reptiles: Why are many reptiles green?
+Birds: How do birds fly?
+Eagles: How endangered are eagles?
+Pigeons: Where in the world are pigeons most densely populated?
+Eagles: Where do most eagles live?
+Number of queries (K)
+4
+Line M+5...M+K+4: Each line contains a topic name, followed by a space, and then the query text
+
+Eagles How en
+Birds Where
+Reptiles Why do
+Animals Wh
+1
+2
+0
+3
 
 
 Explanation
@@ -58,7 +84,7 @@ The first query corresponds to the green area in the diagram, since it is lookin
 #include <cstring>
 using namespace std;
 #define MAX 10
-int N=0;
+//int N=0;
 string MS,nr;
 
 struct chainNODE
@@ -91,7 +117,6 @@ int func(TNODE cur,string source,TNODE root,string q){
 			if(cur->ques[i].empty())
 			{
 				cur->ques[i].assign(q);
-				cout<<cur->ques[i];
 				return 0;
 			}
 			else
@@ -110,7 +135,6 @@ int func1(CNODE ccur,string source,string q){
 			if(ccur->ques[i].empty())
 			{
 				ccur->ques[i].assign(q);
-				cout<<ccur->ques[i];
 				return 0;
 			}
 			else
@@ -231,7 +255,6 @@ void display(TNODE root)
 }
 void check(string s, CNODE cur,int *count)
 {
-	cout<<"CNODE"<<endl;
 	int i=0;
 	if(cur==NULL)
 		return;
@@ -239,7 +262,6 @@ void check(string s, CNODE cur,int *count)
 		{cout<<s<<endl;
 			if((cur->ques[i].find(s))>=0)
 				*count=*count+1;
-			//else
 			i++;
 		}
 		check(s,cur->next,count);
@@ -254,13 +276,11 @@ void check(string s, TNODE root,int *count)
 		return;
 	
 	while(!cur->ques[i].empty())
-		{cout<<s<<endl;
+		{
 			if(cur->ques[i].find(s)!=-1){
-				cout<<cur->ques[i]<<endl;
+				
 				*count=*count+1;
 			}
-			//cout<<cur->ques[i].find(s)<<endl;
-			//else
 			i++;
 		}
 		check(s,root->llink,count);
@@ -280,34 +300,23 @@ void outresult(string s,TNODE root){
 	count=0;
 	sflag=s.substr(0,s.find_first_of(" "));
 	sflag1=s.substr(sflag.length()+1);
-	cout<<sflag<<endl;
-	cout<<sflag1<<endl;
 	if(cur->value==sflag)
 	{
-		cout<<"TNODE1"<<endl;
 		check(sflag1,cur,&count);
-		//check(sflag1,ccur,&count);
 		cout<<count<<endl;
 	}else{
-		cout<<"TNODE2"<<endl;
 		temp=cur=root->llink;
 		if(cur->value==sflag)
 		{
-			cout<<"TNODE3"<<endl;
 			check(sflag1,cur,&count);
-			//check(sflag1,ccur,&count);
 			cout<<count<<endl;	
 		}else{
-			cout<<"TNODE4"<<endl;
 			cur=root->rlink;
 			if(cur->value==sflag)
 			{
-				cout<<"TNODE5"<<endl;
 				check(sflag1,cur,&count);
-				//check(sflag1,ccur,&count);
 				cout<<count<<endl;	
 			}else{
-				cout<<"TNODE6"<<endl;
 				if(ccur!=NULL){
 				while(!ccur->cvalue.empty()){
 					if(ccur->cvalue==sflag){
@@ -332,7 +341,6 @@ string cutter(string delimiter,string s)
 	string ss;
 	pos = s.find(delimiter);
     ss = s.substr(0, pos);
-    cout<<ss<<endl;
     endpos = ss.find_last_not_of(" \t");
 	if( string::npos != endpos )
 	{
@@ -343,7 +351,6 @@ string cutter(string delimiter,string s)
 	{
     	ss = ss.substr( startpos );
 	}
-	cout<<ss<<endl;;
     return ss;
 }
 
@@ -351,89 +358,35 @@ string cutter(string delimiter,string s)
 TNODE constructTree(string s,TNODE root)
 {
 	int pos;
-	cout<<"CT1"<<endl;
 	string ss,delimiter="(";
 	char flag;
-	if(s[0]=='('||s[0]==' '){cout<<"CT2"<<endl;
+	if(s[0]=='('||s[0]==' '){
 		for(pos=0;s[pos]=='('||s[pos]==')'||s[pos]==' ';pos++)
 		{
 			
 		}
 		s.erase(0, pos);
-		cout<<s<<endl;
 	}
 
 	pos = s.find(delimiter);
-	if(pos!=-1){cout<<"CT3"<<endl;
+	if(pos!=-1){
 	ss=cutter(delimiter,s);
 	root=insert_node(ss,root);
 	s.erase(0, pos + delimiter.length()+1);
-	cout<<s<<endl;}
-	while(s[0]!='('&&s[0]!=')'){cout<<"CT4"<<endl;		
+	}
+	while(s[0]!='('&&s[0]!=')'){		
 		delimiter=" ";
-		cout<<s<<endl;
 		pos = s.find(delimiter);
 		ss=cutter(delimiter,s);
-		cout<<ss<<endl;
 		root=insert_node(ss,root);
 		s.erase(0, pos + delimiter.length());
-		cout<<s<<endl;
 	}
-	//display(root);
-	cout<<"CT5"<<endl;
 	MS.assign(s);
 	nr.assign(ss);
-	cout<<MS<<endl<<nr<<endl;
 	return root;
 }
 
-/*TNODE search(TNODE root)
-{
-	//CCUR=NULL;
-	TNODE cur;
-	CNODE ccur;
-	cur=root;
-	ccur=root->more;
-	while(cur!=NULL)
-	{cout<<"S1"<<endl;
-		if(cur->value==nr)
-		{cout<<"S2"<<endl;
-			N=999;
-			return cur;
-		}
-		else
-		{cout<<"S3"<<endl;
-			cur=root->llink;
-			if(cur->value==nr)
-			{cout<<"S4"<<endl;
-				N=999;
-				return cur;
-			}
-			else
-			{cout<<"S5"<<endl;
-				cur=root->rlink;
-				if(cur->value==nr)
-				{cout<<"S6"<<endl;N=999;
-					return cur;
-				}
-				else
-				{cout<<"S7"<<endl;
-					while(ccur!=NULL)
-					{
-						if(ccur->cvalue==nr)
-						{cout<<"S8"<<endl;N=999;
-							CCUR = ccur;
-							return cur;
-						}
-						else
-							ccur=ccur->next;
-					}
-				}
 
-			}
-		}
-	}
-}*/
 
 void search(CNODE root,string s)
 {
@@ -449,7 +402,6 @@ void search(CNODE root,string s)
 }
 void search(TNODE root,string s)
 {
-	//CUR=NULL;
 	if(root==NULL)
 		return;
 	if(root->value==s)
@@ -464,47 +416,6 @@ void search(TNODE root,string s)
 }
 
 
-/*void distribute(string s,TNODE root)
-{
-	TNODE cur,c1,c2;
-	cur=root;
-	int pos;
-	string ss,delimiter=":";
-	ss=cutter(delimiter,s);
-	cout<<ss<<endl;
-	pos = s.find(delimiter);
-	s.erase(0, pos + delimiter.length());
-	cout<<s<<endl;
-	nr=ss;
-	cur=search(root);
-	if(N==999 && CCUR==NULL){
-		cur=insert_ques(s,cur,ss);
-		cout<<"Found"<< ss<<" insert ques\n";
-	}else if(N==999 && CCUR!=NULL){
-		cur=insert_ques(s,cur,ss);
-		cout<<"Found"<< ss<<" insert ques2\n";
-	}else{
-		c1=search(root->llink);
-		if(N==999 && CCUR==NULL){
-			cur=insert_ques(s,c1,ss);
-			cout<<"Found"<< ss<<" insert ques\n";
-		}else if(N==999 && CCUR!=NULL){
-			cur=insert_ques(s,c1,ss);
-			cout<<"Found"<< ss<<" insert ques2\n";
-		}else{
-			c2=search(root->rlink);
-			if(N==999 && CCUR==NULL){
-				cur=insert_ques(s,c2,ss);
-				cout<<"Found"<< ss<<" insert ques\n";
-			}else if(N==999 && CCUR!=NULL){
-				cur=insert_ques(s,c2,ss);
-				cout<<"Found"<< ss<<" insert ques2\n";
-			}else{
-				cout<<"NOT FOUND"<<endl;
-			}
-		}
-	}
-}*/
 void distribute(string s,TNODE root)
 {
 	TNODE cur,c1,c2;
@@ -512,128 +423,25 @@ void distribute(string s,TNODE root)
 	int pos;
 	string ss,delimiter=":";
 	ss=cutter(delimiter,s);
-	cout<<ss<<endl;
 	pos = s.find(delimiter);
 	s.erase(0, pos + delimiter.length());
-	cout<<s<<endl;
 	nr=ss;
 	search(root,ss);
 	if(CUR!=NULL)
 	{
 		cur=insert_ques(s,CUR,ss);
-		cout<<"Found"<< ss<<" insert ques\n";
 	}else if(CCUR!=NULL){
 		cur=insert_ques(s,CUR,ss);
-		cout<<"Found"<< ss<<" insert ques\n";
 	}else{
 		cout<<"NOT found"<<endl;
 	}
 }
-/*void parse(CNODE root,string s)
-{
-	CNODE ccur,cprev;
-	ccur=root;
-	while(ccur!=NULL)
-	{
-		if(ccur->cvalue==s)
-		{
-			CCUR=ccur;
-			return;
-		}
-		else
-		{
-			parse(root->next,s);
-		}
-	}
-}
-void parse(TNODE root,string s)
-{
-	TNODE cur,prev;
-	
-	cur=root;
-	while(cur!=NULL)
-	{
-		if(cur->value==s)
-		{
-			CUR=cur;
-			return;
-		}
-		else
-		{
-			parse(root->llink,s);
-			//parse(root->rlink,s);
-			//parse(root->more,s);
-		}
-	}
-}*/
 
-
-
-//Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
 int main(){
 
 	TNODE root=NULL,cur=NULL,temp=NULL;
-	//string ss;
-	/*root=insert_node("Animals",root);
-	cout<<root->value;
-	cur=insert_node("Reptiles",root);
-	cur=root;
-	cur=cur->llink;
-	cout<<cur->value;
-	cur=insert_node("Birds",root);
-	cur=root;
-	cur=cur->rlink;
-	cout<<cur->value;
-	cur=insert_node("Eagles",root);
-	cur=root;
-	CNODE ccur;
-	ccur=cur->more;
-	cout<<ccur->cvalue;
-	cur=insert_node("Pigeons",root);
-	cur=insert_node("Crows",root);
-	//root=insert_node("Mango2",root);
-	cur=root;
-	ccur=cur->more;
-	while(ccur->next!=NULL){
-		ccur=ccur->next;
-		cout<<ccur->cvalue;
-	}
-/*
-Reptiles: Why are many reptiles green?
-Birds: How do birds fly?
-Eagles: How endangered are eagles?
-Pigeons: Where in the world are pigeons most densely populated?
-Eagles: Where do most eagles live?
-4
-Eagles How en
-Birds Where
-Reptiles Why do
-Animals Wh
-*/
-	/*cur=insert_ques("Why are many reptiles green?",root,"Reptiles");
-	cout<<"Found Reptiles insert ques\n";
-	cur=insert_ques("How do birds fly?",root,"Birds");
-	cout<<"Found Birds insert ques\n";
-	cur=insert_ques("How endangered are eagles?",root,"Eagles");
-	cout<<"Found Eagles insert ques\n";
-	cur=insert_ques("Where in the world are pigeons most densely populated?",root,"Pigeons");
-	cout<<"Found Pigeons insert ques\n";
-	cur=insert_ques("Where do most eagles live?",root,"Eagles");
-	cout<<"Found Eagles insert ques\n";
-
-	//display(root);
-
-	outresult("Eagles How en",root);
-	outresult("Birds Where",root);
-	outresult("Reptiles Why do",root);
-	outresult("Animals Wh",root);*/
-
-
-
-
-	/*string flattree,S[10],S1[10];
+	string flattree,S[10],S1[10];
 	int N,M,K,i;
-	TNODE root;
 	cout << "Enter number of Topics (N)\n";
 	cin >> N;
 	cin.ignore();
@@ -648,10 +456,6 @@ Animals Wh
 	{
 	 	getline(cin, S[i]);
 	}
-	for (i = 0; i < M; i++)
-	{
-	 	cout<<S[i]<<endl;
-	} 
 	cout << "Number of queries (K)\n";
 	cin >> K;
 	cin.ignore();
@@ -660,46 +464,20 @@ Animals Wh
 	{
 		getline(cin, S1[i]);
 	}
-	for (i = 0; i < K; i++)
-	{
-		cout<<S1[i]<<endl;
-	}*/
 	CNODE ccur;
-	root=constructTree("Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )",root);
-	cout<<root->value;
+	root=constructTree(flattree,root);
 	CUR=NULL;
-	//cur=search(root);
 	search(root,nr);
-	//cout<<cur->value<<endl;
 	if(CUR!=NULL)
 		cur=constructTree(MS,CUR);
-	ccur=cur->more;
-	cur=cur->rlink;
-	cout<<cur->value<<endl;
-	cout<<ccur->cvalue;
-	/*string ss,delimiter=":";
-	ss=cutter(delimiter,"Reptiles: Why are many reptiles green?");
-	cout<<ss<<endl;
-	while(CCUR==NULL || CUR==NULL){
-		parse(root,ss);
+	for (i = 0; i < M; i++)
+	{
+		distribute(S[i],root);
 	}
-	if(CCUR!=NULL)
-		cout<<CCUR->cvalue;
-	else
-		cout<<CUR->value;*/
-
-	distribute("Reptiles: Why are many reptiles green?",root);
-	distribute("Birds: How do birds fly?",root);
-	distribute("Eagles: How endangered are eagles?",root);
-	distribute("Pigeons: Where in the world are pigeons most densely populated?",root);
-	distribute("Eagles: Where do most eagles live?",root);
-
-
-	outresult("Eagles How en",root);
-	outresult("Birds Where",root);
-	outresult("Reptiles Why do",root);
-	outresult("Animals Wh",root);
-
+	for (i = 0; i < K; i++)
+	{
+		outresult(S1[i],root);
+	}
 	return 0;
 }
 
