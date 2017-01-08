@@ -229,33 +229,42 @@ void display(TNODE root)
 	}
 
 }
-int check(string s, TNODE cur)
+void check(string s, TNODE root,int *count)
 {
-	int count = 0,i=0;
+	int i=0;
+	TNODE cur,temp,temp1,cur1;
+	CNODE ccur;
+	cur=root;
+	if(root==NULL)
+		return;
+	
 	while(!cur->ques[i].empty())
 		{cout<<s<<endl;
 			if(cur->ques[i].find(s)!=-1){
 				cout<<cur->ques[i]<<endl;
-				count++;
+				*count=*count+1;
 			}
 			//cout<<cur->ques[i].find(s)<<endl;
 			//else
 			i++;
 		}
-		return count;
+		check(s,root->llink,count);
+		check(s,root->rlink,count);
 }
-int check(string s, CNODE cur)
+void check(string s, CNODE cur,int *count)
 {
 	cout<<"CNODE"<<endl;
-	int count=0,i=0;
+	int i=0;
+	if(cur==NULL)
+		return;
 	while(!cur->ques[i].empty())
 		{cout<<s<<endl;
 			if((cur->ques[i].find(s))>=0)
-				count++;
+				*count=*count+1;
 			//else
 			i++;
 		}
-		return count;
+		check(s,cur->next,count);
 }
 
 void outresult(string s,TNODE root){
@@ -264,7 +273,9 @@ void outresult(string s,TNODE root){
 	string sflag,sflag1;
 	cur=root;
 	ccur=root->more;
-	int i=0,count=0;
+	int i=0;
+	int count;
+	count=0;
 	sflag=s.substr(0,s.find_first_of(" "));
 	sflag1=s.substr(sflag.length()+1);
 	cout<<sflag<<endl;
@@ -272,7 +283,8 @@ void outresult(string s,TNODE root){
 	if(cur->value==sflag)
 	{
 		cout<<"TNODE1"<<endl;
-		count=check(sflag1,cur);
+		check(sflag1,cur,&count);
+		check(sflag1,ccur,&count);
 		cout<<count<<endl;
 	}else{
 		cout<<"TNODE2"<<endl;
@@ -280,7 +292,8 @@ void outresult(string s,TNODE root){
 		if(cur->value==sflag)
 		{
 			cout<<"TNODE3"<<endl;
-			count=check(sflag1,cur);
+			check(sflag1,cur,&count);
+			check(sflag1,ccur,&count);
 			cout<<count<<endl;	
 		}else{
 			cout<<"TNODE4"<<endl;
@@ -288,13 +301,14 @@ void outresult(string s,TNODE root){
 			if(cur->value==sflag)
 			{
 				cout<<"TNODE5"<<endl;
-				count=check(sflag1,cur);
+				check(sflag1,cur,&count);
+				check(sflag1,ccur,&count);
 				cout<<count<<endl;	
 			}else{
 				cout<<"TNODE6"<<endl;
 				while(!ccur->cvalue.empty()){
 					if(ccur->cvalue==sflag){
-						count=check(sflag1,ccur);
+						check(sflag1,ccur,&count);
 						cout<<count<<endl;
 						return;
 					}else{
@@ -617,6 +631,7 @@ Animals Wh
 	distribute("Eagles: How endangered are eagles?",root->rlink);
 	distribute("Pigeons: Where in the world are pigeons most densely populated?",root->rlink);
 	distribute("Eagles: Where do most eagles live?",root->rlink);
+
 
 	outresult("Eagles How en",root->rlink);
 	outresult("Birds Where",root);
