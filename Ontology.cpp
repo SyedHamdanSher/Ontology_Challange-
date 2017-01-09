@@ -47,14 +47,18 @@ Sample Output
 2
 0
 3
-lastwalker@Chelsea:~/Documents/techie$ g++ Ontology.cpp 
-lastwalker@Chelsea:~/Documents/techie$ ./a.out
+**************************************************OUTPUT********************************************************************************
+
+NOTE: Below is the running example for the flattree provided with the challenge. Max number of question per Topics(Node) = 10
+COMPILE : g++ Ontology.cpp
+RUN : ./a.out
+INPUT :
 Enter number of Topics (N)
 6
 N topics arranged in a flat tree:Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )
 Enter Number of questions(M)
 5
-Animals ( Reptiles Birds ( Eagles Pigeons Crows ) )Each line contains a topic name, followed by a colon and a space, and then the question text
+Each line contains a topic name, followed by a colon and a space, and then the question text
 
 Reptiles: Why are many reptiles green?
 Birds: How do birds fly?
@@ -69,14 +73,14 @@ Eagles How en
 Birds Where
 Reptiles Why do
 Animals Wh
+
+OUTPUT:
 1
 2
 0
 3
 
-
-Explanation
-The first query corresponds to the green area in the diagram, since it is looking for topics under Eagles, and the query string matches just one question: "How endangered are eagles?" The second query corresponds to the blue area in the diagram, which is the subtree of Birds, and matches two questions that begin  with "Where". The third corresponds to the red area, which does not have any questions that begin with "Why do". The final query corresponds to the entire tree, since Animals is the root topic, and matches three questions.*/
+*/
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -87,15 +91,15 @@ using namespace std;
 //int N=0;
 string MS,nr;
 
-struct chainNODE
+struct chainNODE  //Structure for storing more than two subnode to the parent node
 {
 	string cvalue;
 	chainNODE *next;
 	string ques[MAX];
 	//chainNODE *prev;
 };
-typedef chainNODE* CNODE;
-struct treeNODE
+typedef chainNODE* CNODE; 
+struct treeNODE   //Structure of each node of the tree constructed for storing Topics and questions related to the Topic
 {
 	string value;
 	treeNODE *rlink;
@@ -105,10 +109,10 @@ struct treeNODE
 };
 typedef treeNODE* TNODE;
 
-CNODE CCUR;
+CNODE CCUR; //Global variables
 TNODE CUR;
 
-int func(TNODE cur,string source,TNODE root,string q){
+int func(TNODE cur,string source,TNODE root,string q){   //Function used to store question related to a Topic provided in the TNODE structure
 	int i=0;
 	if (cur->value==source)
 	{
@@ -126,7 +130,7 @@ int func(TNODE cur,string source,TNODE root,string q){
 	else
 		return 1;
 }
-int func1(CNODE ccur,string source,string q){
+int func1(CNODE ccur,string source,string q){  //Function used to store question related to a Topic provided in the CNODE structure
 	int i=0;
 	if (ccur->cvalue==source)
 	{
@@ -145,7 +149,7 @@ int func1(CNODE ccur,string source,string q){
 		return 1;
 }
 
-TNODE insert_node(string item, TNODE root)
+TNODE insert_node(string item, TNODE root)  //Function used to insert topics as items in the nodes of the tree
 {
 	TNODE cur,temp,prev;
 	CNODE ctemp;
@@ -190,7 +194,7 @@ TNODE insert_node(string item, TNODE root)
 		}
 }
 
-TNODE insert_ques(string q,TNODE root,string source)
+TNODE insert_ques(string q,TNODE root,string source)   //Function used to insert questions related to a topic in the nodes of the tree
 {
 	TNODE cur,temp,prev;
 	CNODE ccur;
@@ -231,29 +235,8 @@ TNODE insert_ques(string q,TNODE root,string source)
 			}
 		}
 }
-void display(TNODE root)
-{
-	int i;
-	CNODE ccur;
-	TNODE cur;
-	cur=root;
-	ccur=root->more;
-	for(i=0;i<2;i++){
-		cout<<cur->value<<":"<<cur->ques[i]<<endl;
-		cur=root->llink;
-		cout<<cur->value<<":"<<cur->ques[i]<<endl;
-		cur=root->rlink;
-		cout<<cur->value<<":"<<cur->ques[i]<<endl;
-	}
-	while(!ccur->cvalue.empty()){
-		for(i=0;i<2;i++){
-			cout<<ccur->cvalue<<":"<<ccur->ques[i]<<endl;
-		}
-		ccur=ccur->next;
-	}
 
-}
-void check(string s, CNODE cur,int *count)
+void check(string s, CNODE cur,int *count)   //Function used to count the presence of search key in Topic CNODE of the tree
 {
 	int i=0;
 	if(cur==NULL)
@@ -266,7 +249,8 @@ void check(string s, CNODE cur,int *count)
 		}
 		check(s,cur->next,count);
 }
-void check(string s, TNODE root,int *count)
+
+void check(string s, TNODE root,int *count)  //Function used to count the presence of search key in Topic TNODE of the tree
 {
 	int i=0;
 	TNODE cur,temp,temp1,cur1;
@@ -289,7 +273,7 @@ void check(string s, TNODE root,int *count)
 }
 
 
-void outresult(string s,TNODE root){
+void outresult(string s,TNODE root){ //Function used to print the count value for the search key related to the Topic value and questions stored in the tree nodes  
 	TNODE cur,temp;
 	CNODE ccur;
 	string sflag,sflag1;
@@ -335,7 +319,7 @@ void outresult(string s,TNODE root){
 		
 	}
 }
-string cutter(string delimiter,string s)
+string cutter(string delimiter,string s) //Functions used to remove extra spaces from a string value generated using delimiter provided
 {
 	size_t pos = 0,endpos,startpos;
 	string ss;
@@ -355,7 +339,7 @@ string cutter(string delimiter,string s)
 }
 
 
-TNODE constructTree(string s,TNODE root)
+TNODE constructTree(string s,TNODE root)  //Function construct the tree structure and return the root of the tree
 {
 	int pos;
 	string ss,delimiter="(";
@@ -388,7 +372,7 @@ TNODE constructTree(string s,TNODE root)
 
 
 
-void search(CNODE root,string s)
+void search(CNODE root,string s) //Function used to search the string s in the CNODE of the tree
 {
 	if(root==NULL)
 		return;
@@ -400,7 +384,7 @@ void search(CNODE root,string s)
 		search(root->next,s);
 	}
 }
-void search(TNODE root,string s)
+void search(TNODE root,string s)  //Function used to search the string s in the TNODE of the tree
 {
 	if(root==NULL)
 		return;
@@ -416,7 +400,7 @@ void search(TNODE root,string s)
 }
 
 
-void distribute(string s,TNODE root)
+void distribute(string s,TNODE root) //Function used to distribute all the questions related to Topic in the tree node.
 {
 	TNODE cur,c1,c2;
 	cur=root;
@@ -449,7 +433,6 @@ int main(){
 	getline (cin, flattree);
 	cout << "Enter Number of questions(M)\n";
 	cin >> M;
-	cout<<flattree;
 	cin.ignore();
 	cout<<"Each line contains a topic name, followed by a colon and a space, and then the question text\n"<<endl;
 	for (i = 0; i < M; i++)
